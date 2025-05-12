@@ -277,6 +277,7 @@ exports.createCategoria = async (req, res) => {
 
 // Listar produtos
 exports.getAllProducts = async (req, res) => {
+  console.log('Requisição recebida no GET /api/product');
   try {
     const [results] = await db.query('SELECT * FROM products');
     res.status(200).json(results);

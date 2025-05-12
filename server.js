@@ -10,11 +10,23 @@ const path = require('path');
 // }));
 
 // Configuração do CORS
+const allowedOrigins = [
+  'https://ecommerce-frontend-wheat-psi.vercel.app',
+  'https://ecommerce-frontend-heliom2s-projects.vercel.app'
+];
+
 app.use(cors({
-  origin: 'https://ecommerce-frontend-wheat-psi.vercel.app/', // URL do seu frontend hospedado no Vercel
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],  // Métodos permitidos
-  allowedHeaders: ['Content-Type', 'Authorization']  // Cabeçalhos permitidos
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
 
 // Outros middlewares
 app.use(express.json());

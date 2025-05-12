@@ -11,7 +11,7 @@ const path = require('path');
 
 // Configuração do CORS
 app.use(cors({
-  origin: 'https://ecommerce-frontend-r433h9d3l-heliom2s-projects.vercel.app', // URL do seu frontend hospedado no Vercel
+  origin: 'https://ecommerce-frontend-wheat-psi.vercel.app/', // URL do seu frontend hospedado no Vercel
   methods: ['GET', 'POST', 'PUT', 'DELETE'],  // Métodos permitidos
   allowedHeaders: ['Content-Type', 'Authorization']  // Cabeçalhos permitidos
 }));

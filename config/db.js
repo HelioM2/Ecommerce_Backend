@@ -12,16 +12,31 @@
 // module.exports = pool;
 
 const mysql = require('mysql2/promise');
+require('dotenv').config();
 
 // Use variáveis de ambiente para segurança e flexibilidade
 const pool = mysql.createPool({
-  host: process.env.DB_HOST || 'localhost',
-  user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD || '',
-  database: process.env.DB_NAME || 'ecommerce',
+  host: 'mainline.proxy.rlwy.net',
+  user: 'root',
+  password: 'hvdEOrCmNdUDzlzbGjMLdyDAHnVeedZF',
+  database: 'railway',
+  port: 30130,
   waitForConnections: true,
   connectionLimit: 10,
 });
+
+// Teste de conexão
+async function testConnection() {
+  try {
+    const connection = await pool.getConnection();
+    console.log('Conexão com o banco de dados bem-sucedida!');
+    connection.release();
+  } catch (error) {
+    console.error('Erro ao conectar ao banco de dados:', error);
+  }
+}
+
+testConnection();
 
 module.exports = pool;
 

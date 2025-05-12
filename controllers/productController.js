@@ -278,7 +278,7 @@ exports.createCategoria = async (req, res) => {
 // Listar produtos
 exports.getAllProducts = async (req, res) => {
   try {
-    const [results] = await db.query('SELECT * FROM railway.products;');
+    const [results] = await db.query('SELECT * FROM products');
     res.status(200).json(results);
   } catch (err) {
     console.error('Erro ao buscar produtos:', err);

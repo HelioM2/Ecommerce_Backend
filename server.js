@@ -1,44 +1,42 @@
 const express = require('express');
 const cors = require('cors');
-const app = express();
 const path = require('path');
 
-// Configurar CORS
-// app.use(cors({
-//   origin: 'http://localhost:3000', // origem do teu frontend
-//   credentials: true // permite envio de cookies e headers como Authorization
-// }));
+const app = express();
 
-// Configuração do CORS
+// Lista de domínios autorizados
 const allowedOrigins = [
   'https://ecommerce-frontend-wheat-psi.vercel.app',
-  'https://ecommerce-frontend-heliom2s-projects.vercel.app'
+  'https://ecommerce-frontend-1f00uo13s-heliom2s-projects.vercel.app',
+  'http://localhost:3000'
 ];
 
+// Configuração do CORS com verificação dinâmica de origem
 app.use(cors({
   origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
+    if (!origin) return callback(null, true); // Permite chamadas sem origem (Postman, etc.)
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      return callback(new Error('Not allowed by CORS'));
     }
   },
+  credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-
 // Outros middlewares
 app.use(express.json());
-app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); 
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/uploads', express.static('uploads'));
 
-
-// As tuas rotas
+// Importação de rotas
 const userRoutes = require('./routes/userRoutes');
 const productRoutes = require('./routes/productRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 
+// Definição das rotas
 app.use('/api/users', userRoutes);
 app.use('/api/product', productRoutes);
 app.use('/api', orderRoutes);
@@ -47,4 +45,3 @@ app.use('/api', orderRoutes);
 app.listen(5000, () => {
   console.log('Servidor backend rodando na porta 5000');
 });
-

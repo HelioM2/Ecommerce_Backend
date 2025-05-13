@@ -16,11 +16,11 @@ require('dotenv').config();
 
 // Use variáveis de ambiente para segurança e flexibilidade
 const pool = mysql.createPool({
-  host: 'mainline.proxy.rlwy.net',
+  host: 'mainline.proxy.rlwy.net' || 'localhost',
   user: 'root',
-  password: 'hvdEOrCmNdUDzlzbGjMLdyDAHnVeedZF',
-  database: 'railway',
-  port: 30130,
+  password: 'hvdEOrCmNdUDzlzbGjMLdyDAHnVeedZF' || '',
+  database: 'railway' || 'ecommerce',
+  port: 30130 || 3306,
   waitForConnections: true,
   connectionLimit: 10,
 });

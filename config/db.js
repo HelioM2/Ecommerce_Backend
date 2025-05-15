@@ -22,7 +22,7 @@ const pool = mysql.createPool({
   database: 'railway' || 'ecommerce',
   port: 30130 || 3306,
   waitForConnections: true,
-  connectionLimit: 10,
+  connectionLimit: 30,
 });
 
 // Teste de conexão

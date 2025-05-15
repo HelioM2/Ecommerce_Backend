@@ -13,6 +13,18 @@ const Product = {
   },
 
   create: async (product) => {
+    const { titulo, slogam, imagem, estado } = product;
+    console.log('Criando banner:', product);
+
+    const [result] = await db.query(
+      'INSERT INTO img_banner (titulo, slogam, imagem, estado) VALUES (?, ?, ?, ?)',
+      [titulo, slogam, imagem, estado]
+    );
+
+    return { id: result.insertId, ...product };
+  },
+
+  create: async (product) => {
     const { name, description, price, quantidade, categoria, cor, image } = product;
     const [result] = await db.query(
       'INSERT INTO products (name, description, price,	quantidade, categoria, cor, image) VALUES (?, ?, ?, ?, ?, ?, ?)',

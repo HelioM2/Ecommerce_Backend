@@ -34,6 +34,7 @@ router.get('/:id', productController.getProductById);
 
 // Rota Get de produtos
 router.post('/create', upload.array('images'), productController.createProduct);
+router.post('/create_banner', upload.single('imagem'), productController.createBanner);
 router.post('/create_size', productController.createSizeProduct);
 router.post('/create_color', productController.createColorProduct);
 router.post('/categoria', productController.createCategoria);

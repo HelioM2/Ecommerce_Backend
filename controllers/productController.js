@@ -58,7 +58,7 @@ exports.getUniqueCores = async (req, res) => {
 exports.getUniqueCoresDetails = async (req, res) => {
   const productId = req.params.id;  // Obtém o ID do produto passado na URL
   try {
-    const [results] = await db.query('SELECT c.name FROM colors c INNER JOIN product_variants pv ON pv.color_id = c.id where pv.product_id = ?;',[productId]);
+    const [results] = await db.query('SELECT c.name FROM colors c INNER JOIN product_variants pv ON pv.color_id = c.id where pv.product_id = ?;', [productId]);
     res.json(results);
   } catch (err) {
     console.error('Erro ao buscar cores:', err);
@@ -70,7 +70,7 @@ exports.getUniqueCoresDetails = async (req, res) => {
 exports.getUniqueSizeDetails = async (req, res) => {
   const productId = req.params.id;  // Obtém o ID do produto passado na URL
   try {
-    const [results] = await db.query('SELECT c.name FROM sizes c INNER JOIN product_variants pv ON pv.size_id = c.id where pv.product_id = ?;',[productId]);
+    const [results] = await db.query('SELECT c.name FROM sizes c INNER JOIN product_variants pv ON pv.size_id = c.id where pv.product_id = ?;', [productId]);
     res.json(results);
   } catch (err) {
     console.error('Erro ao buscar cores:', err);
@@ -119,7 +119,7 @@ const upload = multer({ dest: 'uploads/' }).array('images', 10); // Aceitando at
 //   const imageFilenames = req.files.map(file => file.filename).join(',');
 
 //   try {
-    
+
 //     const [result] = await db.query(
 //       'INSERT INTO products (name, description, price, categoria, image) VALUES (?, ?, ?, ?, ?)',
 //       [name, description, price, categoria, imageFilenames]
@@ -161,7 +161,7 @@ exports.createProduct = async (req, res) => {
         responseType: 'arraybuffer',
         headers: {
           ...formData.getHeaders(),
-          'X-Api-Key': 'pF3k8kbB5Z7MUzwTxLQRS1TM', 
+          'X-Api-Key': 'pF3k8kbB5Z7MUzwTxLQRS1TM',
         },
       });
 
@@ -187,17 +187,60 @@ exports.createProduct = async (req, res) => {
   }
 };
 
+exports.createBanner = async (req, res) => {
+  console.log('Entrou createBanner');
+
+  const { titulo, slogam } = req.body;
+
+  if (!titulo || !slogam || !req.file) {
+    return res.status(400).json({ error: 'Título, slogam e uma imagem são obrigatórios!' });
+  }
+
+  try {
+    const file = req.file;
+    const inputPath = path.join(__dirname, '../uploads/', file.filename);
+    const outputPath = path.join(__dirname, '../uploads/', `no-bg-${file.filename}`);
+
+    const formData = new FormData();
+    formData.append('image_file', fs.createReadStream(inputPath));
+    formData.append('size', 'auto');
+
+    const response = await axios.post('https://api.remove.bg/v1.0/removebg', formData, {
+      responseType: 'arraybuffer',
+      headers: {
+        ...formData.getHeaders(),
+        'X-Api-Key': 'pF3k8kbB5Z7MUzwTxLQRS1TM',
+      },
+    });
+
+    fs.writeFileSync(outputPath, response.data);
+    fs.unlinkSync(inputPath);
+
+    // Aqui inclui o campo estado com valor 0
+    const [result] = await db.query(
+      'INSERT INTO banners (titulo, slogam, imagem, estado) VALUES (?, ?, ?, ?)',
+      [titulo, slogam, `no-bg-${file.filename}`, 0]
+    );
+
+    res.status(201).json({ message: 'Banner criado com sucesso!', id: result.insertId });
+
+  } catch (err) {
+    console.error('Erro ao processar ou criar banner:', err.response?.data || err.message);
+    res.status(500).json({ error: 'Erro ao criar banner' });
+  }
+};
+
 
 
 // Criar detalhes dos produtos
 exports.createDetalheProduto = async (req, res) => {
-  const { product_id, color_id, size_id, stock} = req.body;
+  const { product_id, color_id, size_id, stock } = req.body;
 
   if (!product_id || !color_id || !size_id || !stock) {
     return res.status(400).json({ error: 'Todos os campos são obrigatórios!' });
   }
 
- console.log('Produto id selecionado:', req.body.product_id);
+  console.log('Produto id selecionado:', req.body.product_id);
 
   try {
     const [result] = await db.query(
@@ -254,6 +297,7 @@ exports.createColorProduct = async (req, res) => {
     res.status(500).json({ error: 'Erro ao criar a cor' });
   }
 };
+
 
 // Criar Categoria
 exports.createCategoria = async (req, res) => {

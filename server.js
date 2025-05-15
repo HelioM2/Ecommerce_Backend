@@ -6,8 +6,6 @@ const app = express();
 
 // Lista de domínios autorizados
 const allowedOrigins = [
-  'https://ecommerce-frontend-wheat-psi.vercel.app',
-  'https://ecommerce-frontend-1f00uo13s-heliom2s-projects.vercel.app',
   'http://localhost:3000'
 ];
 
@@ -15,7 +13,10 @@ const allowedOrigins = [
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin) return callback(null, true); // Permite chamadas sem origem (Postman, etc.)
-    if (allowedOrigins.includes(origin)) {
+    if (
+      allowedOrigins.includes(origin) ||
+      /\.vercel\.app$/.test(origin)
+    ) {
       return callback(null, true);
     } else {
       return callback(new Error('Not allowed by CORS'));

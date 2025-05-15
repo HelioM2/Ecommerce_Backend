@@ -218,7 +218,7 @@ exports.createBanner = async (req, res) => {
 
     // Aqui inclui o campo estado com valor 0
     const [result] = await db.query(
-      'INSERT INTO banners (titulo, slogam, imagem, estado) VALUES (?, ?, ?, ?)',
+      'INSERT INTO img_banner (titulo, slogam, imagem, estado) VALUES (?, ?, ?, ?)',
       [titulo, slogam, `no-bg-${file.filename}`, 0]
     );
 

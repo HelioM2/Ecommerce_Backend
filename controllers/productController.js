@@ -189,6 +189,11 @@ exports.createProduct = async (req, res) => {
 
 // Criar Banner
 exports.createBanner = async (req, res) => {
+  const fs = require('fs');
+  const path = require('path');
+  const FormData = require('form-data'); // certifica-te que tens este import
+  const axios = require('axios');
+
   console.log('Entrou createBanner');
   console.log('req.file:', req.file);
   console.log('req.files:', req.files);
@@ -200,10 +205,16 @@ exports.createBanner = async (req, res) => {
   }
 
   try {
+    // Verifica ou cria a pasta de uploads
+    const uploadsDir = path.join(__dirname, '../uploads/');
+    if (!fs.existsSync(uploadsDir)) {
+      fs.mkdirSync(uploadsDir, { recursive: true });
+    }
+
     const file = req.file;
-    const inputPath = path.join(__dirname, '../uploads/', file.filename);
-    const outputPath = path.join(__dirname, '../uploads/', `no-bg-${file.filename}`);
-    console.log("Caminho: ",outputPath);
+    const inputPath = path.join(uploadsDir, file.filename);
+    const outputPath = path.join(uploadsDir, `no-bg-${file.filename}`);
+    console.log("Caminho real de saída:", outputPath);
 
     const formData = new FormData();
     formData.append('image_file', fs.createReadStream(inputPath));
@@ -218,9 +229,9 @@ exports.createBanner = async (req, res) => {
     });
 
     fs.writeFileSync(outputPath, response.data);
-    fs.unlinkSync(inputPath);
+    fs.unlinkSync(inputPath); // apaga original
 
-    // Aqui inclui o campo estado com valor 0
+    // Insere no banco de dados
     const [result] = await db.query(
       'INSERT INTO img_banner (titulo, slogam, imagem, estado) VALUES (?, ?, ?, ?)',
       [titulo, slogam, `no-bg-${file.filename}`, 0]
@@ -233,6 +244,7 @@ exports.createBanner = async (req, res) => {
     res.status(500).json({ error: 'Erro ao criar banner' });
   }
 };
+
 
 // Criar detalhes dos produtos
 exports.createDetalheProduto = async (req, res) => {

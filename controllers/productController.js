@@ -190,6 +190,8 @@ exports.createProduct = async (req, res) => {
 // Criar Banner
 exports.createBanner = async (req, res) => {
   console.log('Entrou createBanner');
+  console.log('req.file:', req.file);
+  console.log('req.files:', req.files);
 
   const { titulo, slogam } = req.body;
 
@@ -201,6 +203,7 @@ exports.createBanner = async (req, res) => {
     const file = req.file;
     const inputPath = path.join(__dirname, '../uploads/', file.filename);
     const outputPath = path.join(__dirname, '../uploads/', `no-bg-${file.filename}`);
+    console.log("Caminho: ",outputPath);
 
     const formData = new FormData();
     formData.append('image_file', fs.createReadStream(inputPath));

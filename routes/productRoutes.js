@@ -28,6 +28,8 @@ router.get('/productSize/:id', productController.getUniqueSizeDetails);
 
 // Rota GET - Listar todos os produtos
 router.get('/', productController.getAllProducts);
+// Rota GET - Listar todos os Banners
+router.get('/banner', productController.getAllBanner);
 
 // Rota GET - Produto específico por ID (depois das rotas específicas acima)
 router.get('/:id', productController.getProductById);

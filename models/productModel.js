@@ -7,6 +7,11 @@ const Product = {
     return rows;
   },
 
+  getAll: async () => {
+    const [rows] = await db.query('SELECT * FROM img_banner');
+    return rows;
+  },
+
   getById: async (id) => {
     const [rows] = await db.query('SELECT * FROM products WHERE id = ?', [id]);
     return rows[0];

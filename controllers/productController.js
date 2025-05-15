@@ -331,6 +331,18 @@ exports.getAllProducts = async (req, res) => {
   }
 };
 
+// Listar Banner
+exports.getAllBanner = async (req, res) => {
+  console.log('Requisição recebida no GET /api/banner');
+  try {
+    const [results] = await db.query('SELECT * FROM img_banner');
+    res.status(200).json(results);
+  } catch (err) {
+    console.error('Erro ao buscar Banners:', err);
+    res.status(500).json({ error: 'Erro ao buscar Banners' });
+  }
+};
+
 // Atualizar produtos
 exports.updateProduct = async (req, res) => {
   const { id } = req.params;

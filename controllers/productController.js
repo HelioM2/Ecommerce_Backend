@@ -203,7 +203,7 @@ exports.createBanner = async (req, res) => {
     const outputPath = path.join(__dirname, '../uploads/', `no-bg-${file.filename}`);
 
     const formData = new FormData();
-    formData.append('imagem', fs.createReadStream(inputPath));
+    formData.append('image', fs.createReadStream(inputPath));
     formData.append('size', 'auto');
 
     const response = await axios.post('https://api.remove.bg/v1.0/removebg', formData, {
